@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Data Table</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background: #f4f4f4;
+        }
+        img {
+            max-width: 80px;
+            max-height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">API Data Table</h2>
+    <table id="apiTable">
+        <thead>
+            <tr id="tableHeader">
+                <th>Serial Number</th>
+                <th>Recipe Name</th>
+                <th>Image</th>
+                <th>Rating</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+    <script>
+    // API: https://dummyjson.com/recipes
+    fetch('https://dummyjson.com/recipes')
+        .then(response => response.json())
+        .then(data => {
+            const recipes = data.recipes;
+            if (!recipes || recipes.length === 0) return;
+
+            const tableBody = document.getElementById('tableBody');
+            recipes.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+
+                // Serial Number
+                const tdSerial = document.createElement('td');
+                tdSerial.textContent = idx + 1;
+                tr.appendChild(tdSerial);
+
+                // Recipe Name
+                const tdName = document.createElement('td');
+                tdName.textContent = item.name || '';
+                tr.appendChild(tdName);
+
+                // Image
+                const tdImage = document.createElement('td');
+                if (item.image) {
+                    const img = document.createElement('img');
+                    img.src = item.image;
+                    img.alt = item.name || 'Recipe Image';
+                    tdImage.appendChild(img);
+                }
+                tr.appendChild(tdImage);
+
+                // Rating
+                const tdRating = document.createElement('td');
+                tdRating.textContent = item.rating !== undefined ? item.rating : '';
+                tr.appendChild(tdRating);
+
+                // Price
+                const tdPrice = document.createElement('td');
+                tdPrice.textContent = item.price !== undefined ? item.price : '';
+                tr.appendChild(tdPrice);
+
+                tableBody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            document.getElementById('apiTable').insertAdjacentHTML('afterend', `<p style="color:red;text-align:center;">Failed to load data: ${error}</p>`);
+        });
+    </script>
+</body>
+</html>
